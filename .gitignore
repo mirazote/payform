@@ -1,0 +1,3102 @@
+<?php require_once('../Connections/conn_newayoutsourcing.php');
+if($_GET["v"]) { 
+if(isset($_FILES) && (bool) $_FILES) {
+  
+	$allowedExtensions = array("ogv","webm","mp4","m4v","jpg","png","gif","psd");
+	
+	$files = array();
+	foreach($_FILES as $name=>$file) {
+		$file_name = $file['name']; 
+		$temp_name = $file['tmp_name'];
+		$file_type = $file['type'];
+		$path_parts = pathinfo($file_name);
+		$ext = $path_parts['extension'];
+		if(!in_array($ext,$allowedExtensions)) {
+		
+			//die("Please check file extension to upload.");
+		}
+		$server_file = "documents/advertising/$path_parts[basename]";
+		move_uploaded_file($temp_name,$server_file);
+		array_push($files,$server_file);
+	}
+	
+	// email fields: to, from, subject, and so on
+	
+	$bname = (@$_POST["bname"]);
+	$cname = (@$_POST["cname"]);
+	$position = (@$_POST["position"]);
+	$phone = (@$_POST["phone"]);
+	$email = (@$_POST["email"]);
+	$street = (@$_POST["street"]);
+	$street2 = (@$_POST["street2"]);
+	$city = (@$_POST["city"]);
+	$stateprov = (@$_POST["stateprov"]);
+	$pzip = (@$_POST["pzip"]);
+	$country2 = (@$_POST["country2"]);
+	$sectionp = (@$_POST["sectionp"]);
+	$sections = (@$_POST["sections"]);
+	$adtext = (@$_POST["adtext"]);
+	$acountry = (@$_POST["country"]);
+	//$astate = (@$_POST["state"]);
+	
+if(isset($_POST['Submit'])) {
+   
+    $s1 = implode(',', $_POST['s1']);
+    
+}
+if(isset($_POST['Submit'])) {
+   
+    $s2 = implode(',', $_POST['s2']);
+    
+}
+if(isset($_POST['Submit'])) {
+   
+    $s3 = implode(',', $_POST['s3']);
+    
+}
+if(isset($_POST['Submit'])) {
+   
+    $s4 = implode(',', $_POST['s4']);
+    
+}
+	$qtyB = (@$_POST["qtyB"]);
+    $qtyA = (@$_POST["qtyA"]);
+	$qtyS = (@$_POST["qtyS"]);
+	$qtyCl = (@$_POST["qtyCl"]);
+	$qtyN = (@$_POST["qtyN"]);
+	$Counterd = (@$_POST["Counterd"]);
+	$Countern2 = (@$_POST["Countern2"]);
+	$Counterc2 = (@$_POST["Counterc2"]);
+	$Counters2 = (@$_POST["Counters2"]);
+	$sdate = (@$_POST["sdate"]);
+	$txtThirdNumber3 = (@$_POST["txtThirdNumber3"]);
+	 
+	
+	$query_max = "SELECT MAX(id_order) FROM orders";
+		  mysql_select_db($database_conn_newayoutsourcing, $conn_newayoutsourcing);
+		  $resultid = mysql_db_query("newayout_sft_inandout",$query_max) or die(mysql_error());
+		  $last = mysql_fetch_array($resultid);		
+		  $last = $last[0] + 1;
+		  
+			$time = localtime();
+			
+			$anio = 1900+$time[5];
+			$mes = 1+$time[4];
+			if($mes < 10) $mes = "0".$mes;
+			$dia = $time[3];
+			if($dia < 10) $dia = "0".$dia;
+			$hr = $time[2];
+			if($hr < 10) $hr = "0".$hr;
+			$min = $time[1];
+			if($min < 10) $min = "0".$min;
+			$seg = $time[0];
+			if($seg < 10) $seg = "0".$seg;
+						
+			$fecha = date("Y-m-d", mktime(0, 0, 0, $mes, $dia+30, $anio));			
+			$dsp_fecha = $fecha." ".$hr.":".$min.":".$seg;
+	
+	$sentencia_sql4 = "Insert Into orders (id_order,bname,cname,position,phone,email,street,street2,city,stateprov,pzip,country,announce,sectionp,sections,acountry,astate,qtyB,frecuency,sdate,GrandTotal,active) ";
+	  $sentencia_sql4 .= "Values ('" . $last . "','" . $bname . "','" . $cname . "','" . $position . "','" . $phone ."','" . $email . "','" . $street . "','" . $street2 ."','" . $city ."','" . $stateprov ."','" . $pzip ."','" . $country2 ."','".$qtyA."".$qtyN."".$qtyCl."".$qtyS."','" . $sectionp ."','" . $sections ."','" . $acountry ."','".$qtyA.":".$s1.",".$qtyN.":".$s2.",".$qtyCl.":".$s3.",".$qtyS.":".$s4."','" . $qtyB ."','".$Counterd."Months-".$qtyA.",".$Countern2."Months-".$qtyN.",".$Counterc2."Months-".$qtyCl.",".$Counters2."Months-".$qtyS."','" . $sdate ."','" . $txtThirdNumber3 ."','" . $active ."')";
+		  mysql_select_db($database_conn_newayoutsourcing, $conn_newayoutsourcing);
+	  $result2 = mysql_query($sentencia_sql4,$conn_newayoutsourcing) or die(mysql_error());  
+	
+	
+	$msg1 = "<h2><strong>THANK YOU FOR YOUR ORDER</strong></h2><p>&nbsp;</p>
+	        Dear ".$bname.", <br><br>
+	       Thank you for Advertising at Network In and Out. We will send you a follow-up e-mail with the next step and information when your order is approved. <br><br>
+           Your Purchase Order # is ".$last." <br><br>
+			<h2><strong>Order Details:</strong></h2> <br>
+	        
+			Business Name: ".$bname." <br>
+			Contact Name: ".$cname." <br>
+			Position: ".$position." <br>
+			Phone Number: ".$phone." <br>
+			Email: ".$email." <br><br>
+			
+			<strong>Address</strong><p>&nbsp;</p>
+			
+			Street Address: ".$street." <br>
+			Street Address Line 2: ".$street2." <br>
+			City: ".$city." <br>
+			State / Province: ".$stateprov." <br>
+			Postal / Zip Code: ".$pzip." <br>
+			Country: ".$country2." <br><br>
+			
+			<strong>Advertising Information</strong><p>&nbsp;</p>
+			
+			Announce: <br>".$qtyA."<br>
+			          ".$qtyN."<br>
+					  ".$qtyCl."<br>
+			          ".$qtyS."<br>
+			Section: ".$sectionp.",".$sections."<br>
+			Country: ".$acountry."<br><br>
+			State: <br>".$qtyA.":".$s1."<br>".$qtyN.":".$s2."<br>".$qtyCl.":".$s3."<br>".$qtyS.":".$s4."<br><br>
+			Frequency: <br>".$Counterd."Months-".$qtyA."<br>
+			           ".$Countern2."Months-".$qtyN."<br>
+					   ".$Counterc2."Months-".$qtyCl."<br>
+					   ".$Counters2."Months-".$qtyS."<br><br><br>
+			Staring Date: ".$sdate."<br><br>
+			<h2><strong>Total: $".$txtThirdNumber3."</strong></h2><br>
+			
+			<a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@networkinandout.com&lc=US&button_subtype=services&currency_code=USD&amount=$txtThirdNumber3&lc=US&item_name=$qtyA$qtyN$qtyCl$qtyS&item_number=$last&tax_rate=8.25&bn=PP%2dBuyNowBF%3abtn_buynowCC_LG%2egif%3aNonHosted\" target=\"_blank\"><img src=\"http://networkinandout.com/images/paypalnow.jpg\"  /> 
+			</a>
+						<br><br><br><br>
+			
+						Thank You, 
+			NEWAY OUTSOURCING INC., Software Division &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	\"a NEWAY... of doing business\"<br>
+			www.networkinandout.com <br><br><br><br>
+			
+			2012-2013 ® Copyright NEWAY OUTSOURCING INC., Software Division. 4141 Pinnacle Suite 103 El Paso, Texas, USA 79902 Phone: 1-915-351-6542 e-mail: info@networkinandout.com";
+	$msg = "<h2>Purchase Order Details:</h2> <br>
+	        PO#: ".$last."<br><br>
+			Business Name: ".$bname." <br>
+			Contact Name: ".$cname." <br>
+			Position: ".$position." <br>
+			Phone Number: ".$phone." <br>
+			Email: ".$email." <br><br>
+			
+			<strong>Address</strong><p>&nbsp;</p>
+			
+			Street Address: ".$street." <br>
+			Street Address Line 2: ".$street2." <br>
+			City: ".$city." <br>
+			State / Province: ".$stateprov." <br>
+			Postal / Zip Code: ".$pzip." <br>
+			Country: ".$country2." <br><br>
+			
+			<strong>Advertising Information</strong><p>&nbsp;</p>
+			
+			Announce: ".$qtyA."<br>
+			          ".$qtyN."<br>
+					  ".$qtyCl."<br>
+			          ".$qtyS."<br>
+			Section: ".$sectionp.",".$sections."<br>
+			Country: ".$acountry."<br><br>
+			State: <br>".$qtyA.":".$s1."<br>".$qtyN.":".$s2."<br>".$qtyCl.":".$s3."<br>".$qtyS.":".$s4."<br><br>
+			Frequency: <br>".$Counterd."Months-".$qtyA."<br>
+			           ".$Countern2."Months-".$qtyN."<br>
+					   ".$Counterc2."Months-".$qtyCl."<br>
+					   ".$Counters2."Months-".$qtyS."<br><br><br>
+			Staring Date: ".$sdate."<br><br>
+			<h2>Total: $".$txtThirdNumber3."</h2><br>
+			
+						<br><br><br><br>
+			
+			2012-2013 ® Copyright NEWAY OUTSOURCING INC., Software Division. 4141 Pinnacle Suite 103 El Paso, Texas, USA 79902 Phone: 1-915-351-6542 e-mail: info@networkinandout.com";
+	
+	$to = "sales@networkinandout.com";
+	$from = "Network In and Out  <info@networkinandout.com>"; 
+	$subject ="Advertising Video - Purchase Order # $last";
+	$asunto = "Purchase Order # $last";
+	
+	$headers = "From: $from";
+	 
+	// boundary 
+	$semi_rand = md5(time()); 
+	$mime_boundary = "==Multipart_Boundary_x{$semi_rand}x"; 
+	
+	$to = "sales@networkinandout.com";
+	$from = "Network In and Out  <info@networkinandout.com>"; 
+	$subject ="Advertising Video - Purchase Order # $last";
+	$asunto = "Purchase Order # $last";
+						
+	
+	 
+	// headers for attachment 
+	$headers .= "\nMIME-Version: 1.0\n"; 
+	$headers .= "Content-Type: multipart/mixed;\n";
+	$headers .= " boundary=\"{$mime_boundary}\"";
+	// multipart boundary 
+	$message = "\n\n--{$mime_boundary}\n";
+	
+	$message .= "Content-Type: text/html; charset=\"iso-8859-1\"\n";
+	$message .= "Content-Transfer-Encoding: 7bit\n\n" . $msg . "\n\n";
+	$message .= "--{$mime_boundary}\n";
+	
+	$message1 = "\n\n--{$mime_boundary}\n";
+	
+	$message1 .= "Content-Type: text/html; charset=\"iso-8859-1\"\n";
+	$message1 .= "Content-Transfer-Encoding: 7bit\n\n" . $msg1 . "\n\n";
+	$message1 .= "--{$mime_boundary}\n";
+	 
+	// preparing attachments
+	foreach($files as $file){
+		$afile = fopen($file,"rb");
+		$data = fread($afile,filesize($file));
+		fclose($afile);
+		$data = chunk_split(base64_encode($data));
+		$message .= "Content-Type: {\"application/octet-stream\"};\n";
+		$message .= " name=\"$file\"\n";
+		$message .= "Content-Disposition: attachment;\n"; 
+		$message .= " filename=\"$file\"\n";
+		$message .= "Content-Transfer-Encoding: base64\n\n" . $data . "\n\n";
+		$message .= "--{$mime_boundary}\n";
+	}
+	 
+	// send
+    $ok = mail($email, $asunto, $message1, $headers);
+	//$ok = mail("sales@networkinandout.com", $asunto, $cuerpo_mensaje, $headers);
+	$ok = mail($to, $subject, $message, $headers); 
+	if ($ok) { 
+		echo 
+		//'<div style="position:absolute; top:-5px; left:-5px">
+		//<input type="button" value="<--- Back to Previous Page" onClick="history.go(-1);return true;"></div>'.
+'<table>
+  <td>_____________________________________Advertising Payment_______________________________________</td>
+</table>'.
+"<p>&nbsp;</p>Thank You $bname!<p>&nbsp;</p> Your order confirmation # is ".$last."<p>&nbsp;</p><p>&nbsp;</p>".
+
+'<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@networkinandout.com&lc=US&button_subtype=services&currency_code=USD&amount='.$_POST['txtThirdNumber3'].'&lc=US&item_name='.$qtyA.','.$qtyN.','.$qtyCl.','.$qtyS.'Month,&item_number='.$last.'&tax_rate=8.25&bn=PP%2dBuyNowBF%3abtn_buynowCC_LG%2egif%3aNonHosted" target="_blank"><img src="http://networkinandout.com/images/paypalnow.jpg"  /> 
+			</a>';
+	} else { 
+		echo "<p>Your Order could not be sent!</p>"; 
+	} 
+	die();
+}	
+}
+ 
+?>
+
+<?php
+
+
+
+        $query_id = "SELECT id_user, user_level FROM all_users WHERE username='".$_SESSION['MM_Username']."'";
+
+		mysql_select_db($database_conn_newayoutsourcing, $conn_newayoutsourcing);
+
+		$resultid = mysql_db_query("newayout_sft_inandout",$query_id) or die(mysql_error());
+
+		$damefila = mysql_fetch_array($resultid);
+
+
+
+		$usr_lev = $damefila['user_level'];
+
+		
+
+		if($usr_lev==2){
+
+					echo "<script>javascript:setTimeout('location.href=\"main.php\"', 500);</script>";
+
+	  exit(0);
+
+		
+
+		}
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="-1">
+<title>Neway Outsourcing Inc., Software Division</title>
+<link rel="shortcut icon" href="logo.ico" >
+<link rel="stylesheet" href="jqtransformplugin1/jqtransform.css" type="text/css" media="all" />
+<link rel="stylesheet" type="text/css" href="css/formwizard.css" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<!--<link rel="stylesheet" type="text/css" href="css/modal/default.css" />-->
+		<link rel="stylesheet" type="text/css" href="css/modal/component.css" />
+		<script src="js/modernizr.custom.js"></script>
+
+<script type='text/javascript' src='http://code.jquery.com/jquery-1.4.2.js'></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+<script type="text/javascript" src="jqtransformplugin1/jquery.jqtransform.js" ></script>
+<script type="text/javascript" src="requiered/jquery.js" ></script>
+<script type="text/javascript" src ="js/countries.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<script type="text/javascript" src="js/jquery-ui-1.8.13.custom.min.js"></script>
+<script type="text/javascript" src="js/ui.dropdownchecklist-1.4-min.js"></script>
+
+
+      
+<script src="js/formwizard2.js" type="text/javascript">
+
+
+/***********************************************
+* jQuery Form to Form Wizard- (c) Dynamic Drive (www.dynamicdrive.com)
+* This notice MUST stay intact for legal use
+* Visit http://www.dynamicdrive.com/ for this script and 100s more.
+***********************************************/
+
+</script>
+<script type="text/javascript">
+function blinker(){
+	document.getElementById("btnBlink").style.backgroundColor="red";
+	setTimeout("document.getElementById('btnBlink').style.backgroundColor=''", 500);
+	setTimeout("blinker()",1500);
+}
+
+window.onload=blinker;
+</script>
+<script>
+function enable()
+{
+document.ofrm.Counter.disabled = false;
+}
+</script>
+<script type="text/javascript">
+
+var myform=new formtowizard({
+	formid: 'form',
+	persistsection: true,
+	revealfx: ['slide', 500]
+})
+
+</script>
+<script type="text/javascript">
+$(function() {
+    //find all form with class jqtransform and apply the plugin
+    $("form.jqtransform").jqTransform();
+});
+</script>
+
+<script type="text/javascript" src="js/ui.dropdownchecklist-1.4-min.js"></script>
+     <script type='text/javascript'>//<![CDATA[ 
+
+
+    $(function() {
+        $('#colorselector').change(function(){
+            $('.announce').hide();
+            $('#' + $(this).val()).show();
+        });
+    });
+//]]>  
+
+</script>   
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#s1").dropdownchecklist();
+            $("#s2").dropdownchecklist( {icon: {}, width: 150 } );
+            $("#s3").dropdownchecklist( { width: 150 } );
+            $("#s4").dropdownchecklist( { maxDropHeight: 150 } );
+            $("#s5").dropdownchecklist( { firstItemChecksAll: true, explicitClose: '...close' } );
+            $("#s6").dropdownchecklist();
+            $("#s7").dropdownchecklist();
+            $("#s8").dropdownchecklist( { emptyText: "Please Select...", width: 150 } );
+            $("#s9").dropdownchecklist( { textFormatFunction: function(options) {
+                var selectedOptions = options.filter(":selected");
+                var countOfSelected = selectedOptions.size();
+                switch(countOfSelected) {
+                    case 0: return "<i>Nobody<i>";
+                    case 1: return selectedOptions.text();
+                    case options.size(): return "<b>Everybody</b>";
+                    default: return countOfSelected + " People";
+                }
+            } });
+            $("#s10").dropdownchecklist( { forceMultiple: true
+, onComplete: function(selector) {
+	var values = "";
+  	for( i=0; i < selector.options.length; i++ ) {
+    	if (selector.options[i].selected && (selector.options[i].value != "")) {
+      		if ( values != "" ) values += ";";
+      		values += selector.options[i].value;
+    	}
+  	}
+  	alert( values );
+} 
+, onItemClick: function(checkbox, selector){
+	var justChecked = checkbox.prop("checked");
+	var checkCount = (justChecked) ? 1 : -1;
+	for( i = 0; i < selector.options.length; i++ ){
+		if ( selector.options[i].selected ) checkCount += 1;
+	}
+    if ( checkCount > 3 ) {
+		alert( "Limit is 3" );
+		throw "too many";
+	}
+}
+            });
+        });
+    </script>
+        
+
+ <script>
+$(function() {
+    $( "#datepicker" ).datepicker({
+      showOn: "button",
+      buttonImage: "images/calendar.gif",
+      buttonImageOnly: true
+    });
+  });
+function MM_setTextOfTextfield(objId,x,newText) { //v9.0
+  with (document){ if (getElementById){
+    var obj = getElementById(objId);} if (obj) obj.value = newText;
+  }
+}
+ </script>
+ <script>
+function validateForm()
+{
+var x=document.forms["ofrm"]["bname"].value;
+if (x==null || x=="")
+  {
+  bname.style.background = (bname.value=='') ? 'red' : '';
+  alert("Please type your business name");
+  return false;
+  }
+var x=document.forms["ofrm"]["cname"].value;
+if (x==null || x=="")
+  {
+  cname.style.background = (cname.value=='') ? 'red' : '';
+  alert("Please type your contact name");
+  return false;
+  }
+var x=document.forms["ofrm"]["phone"].value;
+if (x==null || x=="")
+  {
+  phone.style.background = (phone.value=='') ? 'red' : '';
+  alert("Please type your phone number");
+  return false;
+  }
+var x=document.forms["ofrm"]["email"].value;
+if (x==null || x=="")
+  {
+  email.style.background = (email.value=='') ? 'red' : '';
+  alert("Please type your e-mail address");
+  return false;
+  }
+var x=document.forms["ofrm"]["email"].value;
+var atpos=x.indexOf("@");
+var dotpos=x.lastIndexOf(".");
+if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
+  {
+  email.style.background = (email.value=='') ? 'red' : '';
+  alert("Please type a valid e-mail address");
+  return false;
+  }
+var x=document.forms["ofrm"]["citystatecountry"].value;
+if (x==null || x=="")
+  {
+  citystatecountry.style.background = (citystatecountry.value=='') ? 'red' : '';
+  alert("Please type your City, State or Country Announce");
+  return false;
+  }
+var x=document.forms["ofrm"]["datepicker"].value;
+if (x==null || x=="")
+  {
+  alert("Please select your Starting Date");
+  return false;
+  }
+var x=document.forms["ofrm"]["video"].value;
+if (x==null || x=="")
+  {
+  alert("Please add your video (.mp4)");
+  return false;
+  }
+}
+
+</script>
+
+<style type="text/css">
+#apDiv4 {
+	background-repeat:no-repeat;
+	position:fixed;
+	height:100%;
+	width:100%;
+	z-index:3;
+	left: 14;
+	top: 30px;
+}
+#text {
+ font:Arial;
+ font-size: 12px;
+ color:#000080;
+ }
+ .style1 {
+	color: #000080;
+	font-family: Arial;
+	font-size: 12px;
+}
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #FFFFFF;
+}
+.style4 {color: #000080; font-family: Arial; font-size: 10px; }
+.style7 {
+	color: #000080;
+	font-family: Arial;
+	font-size: 18px;
+	font-weight: bold;
+}
+.style17 {
+	font-family: Calibri;
+	font-size: 18px;
+	color: #000000;
+}
+.style19 {
+	color: #000000;
+	font-family: Calibri;
+	font-size: 16px;
+}
+.style20 {
+	color: #000000;
+	font-family: Calibri;
+	font-size: 14px;
+}
+.style30 {
+	color: #000000;
+	font-size: 14px;
+	font-weight: bold;
+}
+.style31 {font-size: 10px}
+</style>
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+jQuery(document).ready(function($) {
+    var sum = 0;
+    $('#course_id :checkbox').click(function() {
+        sum = 0;
+        $('#course_id :checkbox:checked').each(function(idx, elm) {
+            sum += parseFloat(elm.value, 10);
+        });
+        //$('#total_potential').html(sum);
+        document.ofrm.total_potential.value = sum
+		
+    });
+    
+});
+});//]]>  
+
+</script>
+
+<SCRIPT language = JavaScript>
+function calculate() {
+
+A = document.ofrm.total_potential.value
+B = document.ofrm.Counter.value
+//C = document.ofrm.qtyB.value
+A = Number(A)
+B = Number(B)
+//C = Number(C)
+C = (A * B)
+document.ofrm.txtThirdNumber.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber.value
+E = document.ofrm.txtThirdNumbern.value
+F = document.ofrm.txtThirdNumberc.value
+G = document.ofrm.txtThirdNumbers.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumberspt.value = H.toFixed(2)
+O = document.ofrm.txtThirdNumber.value
+P = document.ofrm.Counterd.value
+O = Number(O)
+P = Number(P)
+Q = (O * P)
+document.ofrm.txtThirdNumber2.value = Q.toFixed(2)
+I = document.ofrm.txtThirdNumber2.value
+J = document.ofrm.txtThirdNumbern2.value
+K = document.ofrm.txtThirdNumberc2.value
+L = document.ofrm.txtThirdNumbers2.value
+I = Number(I)
+J = Number(J)
+K = Number(K)
+L = Number(L)
+M = (I + J + K + L)
+document.ofrm.txtThirdNumber3.value = M.toFixed(2)
+}
+function MM_showHideLayers() { //v9.0
+  var i,p,v,obj,args=MM_showHideLayers.arguments;
+  for (i=0; i<(args.length-2); i+=3) 
+  with (document) if (getElementById && ((obj=getElementById(args[i]))!=null)) { v=args[i+2];
+    if (obj.style) { obj=obj.style; v=(v=='show')?'visible':(v=='hide')?'hidden':v; }
+    obj.visibility=v; }
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate1() {
+
+A = document.ofrm.total_potentialn.value
+B = document.ofrm.Countern.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumbern.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber.value
+E = document.ofrm.txtThirdNumbern.value
+F = document.ofrm.txtThirdNumberc.value
+G = document.ofrm.txtThirdNumbers.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumberspt.value = H.toFixed(2)
+O = document.ofrm.txtThirdNumbern.value
+P = document.ofrm.Countern2.value
+O = Number(O)
+P = Number(P)
+Q = (O * P)
+document.ofrm.txtThirdNumbern2.value = Q.toFixed(2)
+I = document.ofrm.txtThirdNumber2.value
+J = document.ofrm.txtThirdNumbern2.value
+K = document.ofrm.txtThirdNumberc2.value
+L = document.ofrm.txtThirdNumbers2.value
+I = Number(I)
+J = Number(J)
+K = Number(K)
+L = Number(L)
+M = (I + J + K + L)
+document.ofrm.txtThirdNumber3.value = M.toFixed(2)
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate2() {
+
+A = document.ofrm.total_potentialc.value
+B = document.ofrm.Counterc.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumberc.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber.value
+E = document.ofrm.txtThirdNumbern.value
+F = document.ofrm.txtThirdNumberc.value
+G = document.ofrm.txtThirdNumbers.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumberspt.value = H.toFixed(2)
+O = document.ofrm.txtThirdNumberc.value
+P = document.ofrm.Counterc2.value
+O = Number(O)
+P = Number(P)
+Q = (O * P)
+document.ofrm.txtThirdNumberc2.value = Q.toFixed(2)
+I = document.ofrm.txtThirdNumber2.value
+J = document.ofrm.txtThirdNumbern2.value
+K = document.ofrm.txtThirdNumberc2.value
+L = document.ofrm.txtThirdNumbers2.value
+I = Number(I)
+J = Number(J)
+K = Number(K)
+L = Number(L)
+M = (I + J + K + L)
+document.ofrm.txtThirdNumber3.value = M.toFixed(2)
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate3() {
+
+A = document.ofrm.total_potentials.value
+B = document.ofrm.Counters.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumbers.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber.value
+E = document.ofrm.txtThirdNumbern.value
+F = document.ofrm.txtThirdNumberc.value
+G = document.ofrm.txtThirdNumbers.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumberspt.value = H.toFixed(2)
+O = document.ofrm.txtThirdNumbers.value
+P = document.ofrm.Counters2.value
+O = Number(O)
+P = Number(P)
+Q = (O * P)
+document.ofrm.txtThirdNumbers2.value = Q.toFixed(2)
+I = document.ofrm.txtThirdNumber2.value
+J = document.ofrm.txtThirdNumbern2.value
+K = document.ofrm.txtThirdNumberc2.value
+L = document.ofrm.txtThirdNumbers2.value
+I = Number(I)
+J = Number(J)
+K = Number(K)
+L = Number(L)
+M = (I + J + K + L)
+document.ofrm.txtThirdNumber3.value = M.toFixed(2)
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate4() {
+
+A = document.ofrm.txtThirdNumber.value
+B = document.ofrm.Counterd.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumber2.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber2.value
+E = document.ofrm.txtThirdNumbern2.value
+F = document.ofrm.txtThirdNumberc2.value
+G = document.ofrm.txtThirdNumbers2.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumber3.value = H.toFixed(2)
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate5() {
+
+A = document.ofrm.txtThirdNumbern.value
+B = document.ofrm.Countern2.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumbern2.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber2.value
+E = document.ofrm.txtThirdNumbern2.value
+F = document.ofrm.txtThirdNumberc2.value
+G = document.ofrm.txtThirdNumbers2.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumber3.value = H.toFixed(2)
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate6() {
+
+A = document.ofrm.txtThirdNumberc.value
+B = document.ofrm.Counterc2.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumberc2.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber2.value
+E = document.ofrm.txtThirdNumbern2.value
+F = document.ofrm.txtThirdNumberc2.value
+G = document.ofrm.txtThirdNumbers2.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumber3.value = H.toFixed(2)
+}
+</SCRIPT>
+<SCRIPT language = JavaScript>
+function calculate7() {
+
+A = document.ofrm.txtThirdNumbers.value
+B = document.ofrm.Counters2.value
+A = Number(A)
+B = Number(B)
+C = (A * B)
+document.ofrm.txtThirdNumbers2.value = C.toFixed(2)
+D = document.ofrm.txtThirdNumber2.value
+E = document.ofrm.txtThirdNumbern2.value
+F = document.ofrm.txtThirdNumberc2.value
+G = document.ofrm.txtThirdNumbers2.value
+D = Number(D)
+E = Number(E)
+F = Number(F)
+G = Number(G)
+H = (D + E + F + G)
+document.ofrm.txtThirdNumber3.value = H.toFixed(2)
+}
+</SCRIPT>
+<script>
+function displayResult(s1)
+{
+document.getElementById("Counterd").value=s1
+}
+</script>
+<script>
+function displayResult1(s2)
+{
+document.getElementById("Countern2").value=s2
+}
+</script>
+<script>
+function displayResult2(s3)
+{
+document.getElementById("Counterc2").value=s3
+}
+</script>
+<script>
+function displayResult3(s4)
+{
+document.getElementById("Counters2").value=s4
+}
+</script>
+</head>
+<body>
+<span style="font:11pt arial; color:#FF0000"><img src="images/logonewinandout.png" width="135" height="48" /></span>
+<div id="apDiv4">
+
+<form class="jqtransform" id="form" name="ofrm" method="post" action="/pay_menuvideo4.1.php?v=1" onSubmit="return validateForm()" enctype="multipart/form-data">
+<!--<form id="form" name="ofrm" method="post" action="/pay_menu.php?v=1" onsubmit="return validateForm()" enctype="multipart/form-data">-->
+
+  <input type="hidden" name="fic" value="<?php echo (@$_POST["fic"]); ?>">
+ <?php 
+
+	$query_id = "SELECT id_user, user_level FROM all_users WHERE username='".$_SESSION['MM_Username']."'";
+
+	mysql_select_db($database_conn_newayoutsourcing, $conn_newayoutsourcing);
+
+	$resultid5 = mysql_db_query("newayout_sft_inandout",$query_id) or die(mysql_error());
+
+	$damefila5 = mysql_fetch_array($resultid5);
+
+
+
+	$id_user = $damefila5['id_user'];
+
+ 
+
+ ?>
+ 
+<fieldset class="sectionwrap">
+
+<legend></legend>
+<table width="940" border="0" align="right" cellpadding="0" cellspacing="0">
+  <!--DWLayoutTable-->
+  <tr>
+    <td width="409" height="" valign="top"><table width="458" border="0" cellpadding="0" cellspacing="0">
+      <!--DWLayoutTable-->
+      <tr>
+        <td height="35" colspan="3" valign="top"><p align="center" style="font:11pt arial; color:#FF0000"><span class="style7">General Information</span></td>
+        </tr>
+      <tr>
+        <td width="106" height="15"></td>
+        <td width="189" valign="top" class="style1" id="text">Business Name</td>
+        <td width="217" valign="top"><span class="style1">Business Logo</span></td>
+        </tr>
+      <tr>
+        <td height="24">&nbsp;</td>
+        <td colspan="2" valign="top"><input name="bname" type="text" id="bname" size="10" />
+          <input type="file" name="logo" id="logo" /></td>
+        </tr>
+      <tr>
+        <td height="15"></td>
+        <td colspan="2" valign="top" id="style1"><div align="left"><span style="color: #FF0000"></span><span class="style1">Contact Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="style1">Position&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="style1">Phone Number</span><br>
+        </div></td>
+        </tr>
+      <tr>
+        <td height="22">&nbsp;</td>
+        <td colspan="2" valign="top">
+          <div align="left">
+            <input name="cname" type="text" id="cname" size="9" />
+            <input name="position" type="text" id="position" size="9" />          
+            <input name="phone" type="text" id="phone" size="11" />
+            </div></td>
+        </tr>
+      
+
+      
+      <tr>
+        <td height="19">&nbsp;</td>
+        <td colspan="2" valign="top" id="style1"><span style="color: #FF0000">*</span><span class="style1">E-mail</span><br></td>
+        </tr>
+      <tr>
+        <td height="22">&nbsp;</td>
+        <td colspan="2" valign="top"><input name="email" type="text" id="email" size="31" />
+          <br></td>
+        </tr><br />
+       <tr>
+        <td height="19">&nbsp;</td>
+        <td colspan="2" valign="top" id="style1"><span class="style1">Street Address</span><br></td>
+        </tr>
+        <tr>
+        <td height="22">&nbsp;</td>
+        <td colspan="2" valign="top" id="style1"><input name="street" type="text" id="street" size="31" />
+          <br></td>
+        </tr>
+      <tr>
+        <td height="19">&nbsp;</td>
+        <td colspan="2" valign="top" id="style1"><span class="style1">Street Address Line 2</span><br></td>
+        </tr>
+      <tr>
+        <td height="22">&nbsp;</td>
+        <td colspan="2" valign="top"><input name="street2" type="text" id="street2" size="31" />
+          <br></td>
+        </tr>
+      <tr>
+        <td height="15"></td>
+        <td colspan="2" valign="top"><span class="style1">City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;State / Province</span></td>
+        </tr>
+      <tr>
+        <td height="22">&nbsp;</td>
+        <td colspan="2" valign="top" id="style1"><input name="city" type="text" id="city" size="15" />
+          <input name="stateprov" type="text" id="stateprov" size="15" />
+          <br></td>
+        </tr>
+      
+      
+      
+      
+      
+
+      <tr>
+        <td height="15"></td>
+        <td colspan="2" valign="top"><span class="style1">Postal / Zip Code</span><span class="style1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Country</span><br></td>
+        </tr>
+      <tr>
+        <td height="24">&nbsp;</td>
+        <td colspan="2" valign="top" id="style1"><input name="pzip" type="text" id="pzip" size="15" />
+          <select name="country2" id="country2" style="width:130px">
+                <option value="0"><?php echo $_GET["co"]; ?></option>
+                <option value="United States of America" selected="selected">United States of America</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Afghanistan">Afghanistan</option>
+                <option value="Albania">Albania</option>
+                <option value="Algeria">Algeria</option>
+                <option value="American Samoa">American Samoa</option>
+                <option value="Andorra">Andorra</option>
+                <option value="Angola">Angola</option>
+                <option value="Anguilla">Anguilla</option>
+                <option value="Antarctica">Antarctica</option>
+                <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Armenia">Armenia</option>
+                <option value="Aruba">Aruba</option>
+                <option value="Australia">Australia</option>
+                <option value="Austria">Austria</option>
+                <option value="Azerbaijan">Azerbaijan</option>
+                <option value="Bahamas">Bahamas</option>
+                <option value="Bahrain">Bahrain</option>
+                <option value="Bangladesh">Bangladesh</option>
+                <option value="Barbados">Barbados</option>
+                <option value="Belarus">Belarus</option>
+                <option value="Belgium">Belgium</option>
+                <option value="Belize">Belize</option>
+                <option value="Benin">Benin</option>
+                <option value="Bermuda">Bermuda</option>
+                <option value="Bhutan">Bhutan</option>
+                <option value="Bolivia">Bolivia</option>
+                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                <option value="Botswana">Botswana</option>
+                <option value="Bouvet Island">Bouvet Island</option>
+                <option value="Brazil">Brazil</option>
+                <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+                <option value="Brunei Darussalam">Brunei Darussalam</option>
+                <option value="Bulgaria">Bulgaria</option>
+                <option value="Burkina Faso">Burkina Faso</option>
+                <option value="Burundi">Burundi</option>
+                <option value="Cambodia">Cambodia</option>
+                <option value="Cameroon">Cameroon</option>
+                <option value="Canada">Canada</option>
+                <option value="Cape Verde">Cape Verde</option>
+                <option value="Cayman Islands">Cayman Islands</option>
+                <option value="Central African Republic">Central African Republic</option>
+                <option value="Chad">Chad</option>
+                <option value="Chile">Chile</option>
+                <option value="China">China</option>
+                <option value="Christmas Island">Christmas Island</option>
+                <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+                <option value="Colombia">Colombia</option>
+                <option value="Comoros">Comoros</option>
+                <option value="Congo">Congo</option>
+                <option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+                <option value="Cook Islands">Cook Islands</option>
+                <option value="Costa Rica">Costa Rica</option>
+                <option value="Cote D'ivoire">Cote D'ivoire</option>
+                <option value="Croatia">Croatia</option>
+                <option value="Cuba">Cuba</option>
+                <option value="Cyprus">Cyprus</option>
+                <option value="Czech Republic">Czech Republic</option>
+                <option value="Denmark">Denmark</option>
+                <option value="Djibouti">Djibouti</option>
+                <option value="Dominica">Dominica</option>
+                <option value="Dominican Republic">Dominican Republic</option>
+                <option value="Ecuador">Ecuador</option>
+                <option value="Egypt">Egypt</option>
+                <option value="El Salvador">El Salvador</option>
+                <option value="Equatorial Guinea">Equatorial Guinea</option>
+                <option value="Eritrea">Eritrea</option>
+                <option value="Estonia">Estonia</option>
+                <option value="Ethiopia">Ethiopia</option>
+                <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+                <option value="Faroe Islands">Faroe Islands</option>
+                <option value="Fiji">Fiji</option>
+                <option value="Finland">Finland</option>
+                <option value="France">France</option>
+                <option value="French Guiana">French Guiana</option>
+                <option value="French Polynesia">French Polynesia</option>
+                <option value="French Southern Territories">French Southern Territories</option>
+                <option value="Gabon">Gabon</option>
+                <option value="Gambia">Gambia</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Germany">Germany</option>
+                <option value="Ghana">Ghana</option>
+                <option value="Gibraltar">Gibraltar</option>
+                <option value="Greece">Greece</option>
+                <option value="Greenland">Greenland</option>
+                <option value="Grenada">Grenada</option>
+                <option value="Guadeloupe">Guadeloupe</option>
+                <option value="Guam">Guam</option>
+                <option value="Guatemala">Guatemala</option>
+                <option value="Guinea">Guinea</option>
+                <option value="Guinea-bissau">Guinea-bissau</option>
+                <option value="Guyana">Guyana</option>
+                <option value="Haiti">Haiti</option>
+                <option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+                <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+                <option value="Honduras">Honduras</option>
+                <option value="Hong Kong">Hong Kong</option>
+                <option value="Hungary">Hungary</option>
+                <option value="Iceland">Iceland</option>
+                <option value="India">India</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+                <option value="Iraq">Iraq</option>
+                <option value="Ireland">Ireland</option>
+                <option value="Israel">Israel</option>
+                <option value="Italy">Italy</option>
+                <option value="Jamaica">Jamaica</option>
+                <option value="Japan">Japan</option>
+                <option value="Jordan">Jordan</option>
+                <option value="Kazakhstan">Kazakhstan</option>
+                <option value="Kenya">Kenya</option>
+                <option value="Kiribati">Kiribati</option>
+                <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+                <option value="Korea, Republic of">Korea, Republic of</option>
+                <option value="Kuwait">Kuwait</option>
+                <option value="Kyrgyzstan">Kyrgyzstan</option>
+                <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+                <option value="Latvia">Latvia</option>
+                <option value="Lebanon">Lebanon</option>
+                <option value="Lesotho">Lesotho</option>
+                <option value="Liberia">Liberia</option>
+                <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+                <option value="Liechtenstein">Liechtenstein</option>
+                <option value="Lithuania">Lithuania</option>
+                <option value="Luxembourg">Luxembourg</option>
+                <option value="Macao">Macao</option>
+                <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+                <option value="Madagascar">Madagascar</option>
+                <option value="Malawi">Malawi</option>
+                <option value="Malaysia">Malaysia</option>
+                <option value="Maldives">Maldives</option>
+                <option value="Mali">Mali</option>
+                <option value="Malta">Malta</option>
+                <option value="Marshall Islands">Marshall Islands</option>
+                <option value="Martinique">Martinique</option>
+                <option value="Mauritania">Mauritania</option>
+                <option value="Mauritius">Mauritius</option>
+                <option value="Mayotte">Mayotte</option>
+                <option value="Mexico">Mexico</option>
+                <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+                <option value="Moldova, Republic of">Moldova, Republic of</option>
+                <option value="Monaco">Monaco</option>
+                <option value="Mongolia">Mongolia</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Morocco">Morocco</option>
+                <option value="Mozambique">Mozambique</option>
+                <option value="Myanmar">Myanmar</option>
+                <option value="Namibia">Namibia</option>
+                <option value="Nauru">Nauru</option>
+                <option value="Nepal">Nepal</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Netherlands Antilles">Netherlands Antilles</option>
+                <option value="New Caledonia">New Caledonia</option>
+                <option value="New Zealand">New Zealand</option>
+                <option value="Nicaragua">Nicaragua</option>
+                <option value="Niger">Niger</option>
+                <option value="Nigeria">Nigeria</option>
+                <option value="Niue">Niue</option>
+                <option value="Norfolk Island">Norfolk Island</option>
+                <option value="Northern Mariana Islands">Northern Mariana Islands</option>
+                <option value="Norway">Norway</option>
+                <option value="Oman">Oman</option>
+                <option value="Pakistan">Pakistan</option>
+                <option value="Palau">Palau</option>
+                <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+                <option value="Panama">Panama</option>
+                <option value="Papua New Guinea">Papua New Guinea</option>
+                <option value="Paraguay">Paraguay</option>
+                <option value="Peru">Peru</option>
+                <option value="Philippines">Philippines</option>
+                <option value="Pitcairn">Pitcairn</option>
+                <option value="Poland">Poland</option>
+                <option value="Portugal">Portugal</option>
+                <option value="Puerto Rico">Puerto Rico</option>
+                <option value="Qatar">Qatar</option>
+                <option value="Reunion">Reunion</option>
+                <option value="Romania">Romania</option>
+                <option value="Russian Federation">Russian Federation</option>
+                <option value="Rwanda">Rwanda</option>
+                <option value="Saint Helena">Saint Helena</option>
+                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+                <option value="Saint Lucia">Saint Lucia</option>
+                <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+                <option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+                <option value="Samoa">Samoa</option>
+                <option value="San Marino">San Marino</option>
+                <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="Senegal">Senegal</option>
+                <option value="Serbia and Montenegro">Serbia and Montenegro</option>
+                <option value="Seychelles">Seychelles</option>
+                <option value="Sierra Leone">Sierra Leone</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Slovakia">Slovakia</option>
+                <option value="Slovenia">Slovenia</option>
+                <option value="Solomon Islands">Solomon Islands</option>
+                <option value="Somalia">Somalia</option>
+                <option value="South Africa">South Africa</option>
+                <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+                <option value="Spain">Spain</option>
+                <option value="Sri Lanka">Sri Lanka</option>
+                <option value="Sudan">Sudan</option>
+                <option value="Suriname">Suriname</option>
+                <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+                <option value="Swaziland">Swaziland</option>
+                <option value="Sweden">Sweden</option>
+                <option value="Switzerland">Switzerland</option>
+                <option value="Syrian Arab Republic">Syrian Arab Republic</option>
+                <option value="Taiwan, Province of China">Taiwan, Province of China</option>
+                <option value="Tajikistan">Tajikistan</option>
+                <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Timor-leste">Timor-leste</option>
+                <option value="Togo">Togo</option>
+                <option value="Tokelau">Tokelau</option>
+                <option value="Tonga">Tonga</option>
+                <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                <option value="Tunisia">Tunisia</option>
+                <option value="Turkey">Turkey</option>
+                <option value="Turkmenistan">Turkmenistan</option>
+                <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+                <option value="Tuvalu">Tuvalu</option>
+                <option value="Uganda">Uganda</option>
+                <option value="Ukraine">Ukraine</option>
+                <option value="United Arab Emirates">United Arab Emirates</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="United States">United States</option>
+                <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+                <option value="Uruguay">Uruguay</option>
+                <option value="Uzbekistan">Uzbekistan</option>
+                <option value="Vanuatu">Vanuatu</option>
+                <option value="Venezuela">Venezuela</option>
+                <option value="Viet Nam">Viet Nam</option>
+                <option value="Virgin Islands, British">Virgin Islands, British</option>
+                <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+                <option value="Wallis and Futuna">Wallis and Futuna</option>
+                <option value="Western Sahara">Western Sahara</option>
+                <option value="Yemen">Yemen</option>
+                <option value="Zambia">Zambia</option>
+                <option value="Zimbabwe">Zimbabwe</option>
+            </select>
+          <br></td>
+        </tr>
+    </table>
+
+ <fieldset class="sectionwrap">
+<legend></legend><br />
+ <table width="550">
+ <tr>
+ <td width="107" class="style1">Section </td>
+ <td width="103" class="style1">&nbsp;</td>
+ <td width="75"><span class="style1">Starting Date</span></td>
+ <td width="130"><span class="style1">Country</span></td>
+ <td width="74">&nbsp;</td>
+ </tr>
+ <tr>
+   <td height="24"><input name="sectionp" type="checkbox" id="sectionp" onclick="MM_showHideLayers('catp','','show')" value="Products" />
+     <span class="style4">Products</span></td>
+   <td class="style1">
+     <input name="sections" type="checkbox" id="sections" onclick="MM_showHideLayers('cats','','show')" value="Services" />
+     <span class="style31">Services</span></td>
+   <td><input name="sdate" type="date" id="datepicker-example1" size="10" /></td>
+   <td><select name="country" id="country" style="width:130px">
+     <option value="0"><?php echo $_GET["co"]; ?></option>
+     <option value="United States of America" selected="selected">United States of America</option>
+     <option value="United Kingdom">United Kingdom</option>
+     <option value="Afghanistan">Afghanistan</option>
+     <option value="Albania">Albania</option>
+     <option value="Algeria">Algeria</option>
+     <option value="American Samoa">American Samoa</option>
+     <option value="Andorra">Andorra</option>
+     <option value="Angola">Angola</option>
+     <option value="Anguilla">Anguilla</option>
+     <option value="Antarctica">Antarctica</option>
+     <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+     <option value="Argentina">Argentina</option>
+     <option value="Armenia">Armenia</option>
+     <option value="Aruba">Aruba</option>
+     <option value="Australia">Australia</option>
+     <option value="Austria">Austria</option>
+     <option value="Azerbaijan">Azerbaijan</option>
+     <option value="Bahamas">Bahamas</option>
+     <option value="Bahrain">Bahrain</option>
+     <option value="Bangladesh">Bangladesh</option>
+     <option value="Barbados">Barbados</option>
+     <option value="Belarus">Belarus</option>
+     <option value="Belgium">Belgium</option>
+     <option value="Belize">Belize</option>
+     <option value="Benin">Benin</option>
+     <option value="Bermuda">Bermuda</option>
+     <option value="Bhutan">Bhutan</option>
+     <option value="Bolivia">Bolivia</option>
+     <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+     <option value="Botswana">Botswana</option>
+     <option value="Bouvet Island">Bouvet Island</option>
+     <option value="Brazil">Brazil</option>
+     <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+     <option value="Brunei Darussalam">Brunei Darussalam</option>
+     <option value="Bulgaria">Bulgaria</option>
+     <option value="Burkina Faso">Burkina Faso</option>
+     <option value="Burundi">Burundi</option>
+     <option value="Cambodia">Cambodia</option>
+     <option value="Cameroon">Cameroon</option>
+     <option value="Canada">Canada</option>
+     <option value="Cape Verde">Cape Verde</option>
+     <option value="Cayman Islands">Cayman Islands</option>
+     <option value="Central African Republic">Central African Republic</option>
+     <option value="Chad">Chad</option>
+     <option value="Chile">Chile</option>
+     <option value="China">China</option>
+     <option value="Christmas Island">Christmas Island</option>
+     <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+     <option value="Colombia">Colombia</option>
+     <option value="Comoros">Comoros</option>
+     <option value="Congo">Congo</option>
+     <option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+     <option value="Cook Islands">Cook Islands</option>
+     <option value="Costa Rica">Costa Rica</option>
+     <option value="Cote D'ivoire">Cote D'ivoire</option>
+     <option value="Croatia">Croatia</option>
+     <option value="Cuba">Cuba</option>
+     <option value="Cyprus">Cyprus</option>
+     <option value="Czech Republic">Czech Republic</option>
+     <option value="Denmark">Denmark</option>
+     <option value="Djibouti">Djibouti</option>
+     <option value="Dominica">Dominica</option>
+     <option value="Dominican Republic">Dominican Republic</option>
+     <option value="Ecuador">Ecuador</option>
+     <option value="Egypt">Egypt</option>
+     <option value="El Salvador">El Salvador</option>
+     <option value="Equatorial Guinea">Equatorial Guinea</option>
+     <option value="Eritrea">Eritrea</option>
+     <option value="Estonia">Estonia</option>
+     <option value="Ethiopia">Ethiopia</option>
+     <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+     <option value="Faroe Islands">Faroe Islands</option>
+     <option value="Fiji">Fiji</option>
+     <option value="Finland">Finland</option>
+     <option value="France">France</option>
+     <option value="French Guiana">French Guiana</option>
+     <option value="French Polynesia">French Polynesia</option>
+     <option value="French Southern Territories">French Southern Territories</option>
+     <option value="Gabon">Gabon</option>
+     <option value="Gambia">Gambia</option>
+     <option value="Georgia">Georgia</option>
+     <option value="Germany">Germany</option>
+     <option value="Ghana">Ghana</option>
+     <option value="Gibraltar">Gibraltar</option>
+     <option value="Greece">Greece</option>
+     <option value="Greenland">Greenland</option>
+     <option value="Grenada">Grenada</option>
+     <option value="Guadeloupe">Guadeloupe</option>
+     <option value="Guam">Guam</option>
+     <option value="Guatemala">Guatemala</option>
+     <option value="Guinea">Guinea</option>
+     <option value="Guinea-bissau">Guinea-bissau</option>
+     <option value="Guyana">Guyana</option>
+     <option value="Haiti">Haiti</option>
+     <option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+     <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+     <option value="Honduras">Honduras</option>
+     <option value="Hong Kong">Hong Kong</option>
+     <option value="Hungary">Hungary</option>
+     <option value="Iceland">Iceland</option>
+     <option value="India">India</option>
+     <option value="Indonesia">Indonesia</option>
+     <option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+     <option value="Iraq">Iraq</option>
+     <option value="Ireland">Ireland</option>
+     <option value="Israel">Israel</option>
+     <option value="Italy">Italy</option>
+     <option value="Jamaica">Jamaica</option>
+     <option value="Japan">Japan</option>
+     <option value="Jordan">Jordan</option>
+     <option value="Kazakhstan">Kazakhstan</option>
+     <option value="Kenya">Kenya</option>
+     <option value="Kiribati">Kiribati</option>
+     <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+     <option value="Korea, Republic of">Korea, Republic of</option>
+     <option value="Kuwait">Kuwait</option>
+     <option value="Kyrgyzstan">Kyrgyzstan</option>
+     <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+     <option value="Latvia">Latvia</option>
+     <option value="Lebanon">Lebanon</option>
+     <option value="Lesotho">Lesotho</option>
+     <option value="Liberia">Liberia</option>
+     <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+     <option value="Liechtenstein">Liechtenstein</option>
+     <option value="Lithuania">Lithuania</option>
+     <option value="Luxembourg">Luxembourg</option>
+     <option value="Macao">Macao</option>
+     <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+     <option value="Madagascar">Madagascar</option>
+     <option value="Malawi">Malawi</option>
+     <option value="Malaysia">Malaysia</option>
+     <option value="Maldives">Maldives</option>
+     <option value="Mali">Mali</option>
+     <option value="Malta">Malta</option>
+     <option value="Marshall Islands">Marshall Islands</option>
+     <option value="Martinique">Martinique</option>
+     <option value="Mauritania">Mauritania</option>
+     <option value="Mauritius">Mauritius</option>
+     <option value="Mayotte">Mayotte</option>
+     <option value="Mexico">Mexico</option>
+     <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+     <option value="Moldova, Republic of">Moldova, Republic of</option>
+     <option value="Monaco">Monaco</option>
+     <option value="Mongolia">Mongolia</option>
+     <option value="Montserrat">Montserrat</option>
+     <option value="Morocco">Morocco</option>
+     <option value="Mozambique">Mozambique</option>
+     <option value="Myanmar">Myanmar</option>
+     <option value="Namibia">Namibia</option>
+     <option value="Nauru">Nauru</option>
+     <option value="Nepal">Nepal</option>
+     <option value="Netherlands">Netherlands</option>
+     <option value="Netherlands Antilles">Netherlands Antilles</option>
+     <option value="New Caledonia">New Caledonia</option>
+     <option value="New Zealand">New Zealand</option>
+     <option value="Nicaragua">Nicaragua</option>
+     <option value="Niger">Niger</option>
+     <option value="Nigeria">Nigeria</option>
+     <option value="Niue">Niue</option>
+     <option value="Norfolk Island">Norfolk Island</option>
+     <option value="Northern Mariana Islands">Northern Mariana Islands</option>
+     <option value="Norway">Norway</option>
+     <option value="Oman">Oman</option>
+     <option value="Pakistan">Pakistan</option>
+     <option value="Palau">Palau</option>
+     <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+     <option value="Panama">Panama</option>
+     <option value="Papua New Guinea">Papua New Guinea</option>
+     <option value="Paraguay">Paraguay</option>
+     <option value="Peru">Peru</option>
+     <option value="Philippines">Philippines</option>
+     <option value="Pitcairn">Pitcairn</option>
+     <option value="Poland">Poland</option>
+     <option value="Portugal">Portugal</option>
+     <option value="Puerto Rico">Puerto Rico</option>
+     <option value="Qatar">Qatar</option>
+     <option value="Reunion">Reunion</option>
+     <option value="Romania">Romania</option>
+     <option value="Russian Federation">Russian Federation</option>
+     <option value="Rwanda">Rwanda</option>
+     <option value="Saint Helena">Saint Helena</option>
+     <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+     <option value="Saint Lucia">Saint Lucia</option>
+     <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+     <option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+     <option value="Samoa">Samoa</option>
+     <option value="San Marino">San Marino</option>
+     <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+     <option value="Saudi Arabia">Saudi Arabia</option>
+     <option value="Senegal">Senegal</option>
+     <option value="Serbia and Montenegro">Serbia and Montenegro</option>
+     <option value="Seychelles">Seychelles</option>
+     <option value="Sierra Leone">Sierra Leone</option>
+     <option value="Singapore">Singapore</option>
+     <option value="Slovakia">Slovakia</option>
+     <option value="Slovenia">Slovenia</option>
+     <option value="Solomon Islands">Solomon Islands</option>
+     <option value="Somalia">Somalia</option>
+     <option value="South Africa">South Africa</option>
+     <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+     <option value="Spain">Spain</option>
+     <option value="Sri Lanka">Sri Lanka</option>
+     <option value="Sudan">Sudan</option>
+     <option value="Suriname">Suriname</option>
+     <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+     <option value="Swaziland">Swaziland</option>
+     <option value="Sweden">Sweden</option>
+     <option value="Switzerland">Switzerland</option>
+     <option value="Syrian Arab Republic">Syrian Arab Republic</option>
+     <option value="Taiwan, Province of China">Taiwan, Province of China</option>
+     <option value="Tajikistan">Tajikistan</option>
+     <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+     <option value="Thailand">Thailand</option>
+     <option value="Timor-leste">Timor-leste</option>
+     <option value="Togo">Togo</option>
+     <option value="Tokelau">Tokelau</option>
+     <option value="Tonga">Tonga</option>
+     <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+     <option value="Tunisia">Tunisia</option>
+     <option value="Turkey">Turkey</option>
+     <option value="Turkmenistan">Turkmenistan</option>
+     <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+     <option value="Tuvalu">Tuvalu</option>
+     <option value="Uganda">Uganda</option>
+     <option value="Ukraine">Ukraine</option>
+     <option value="United Arab Emirates">United Arab Emirates</option>
+     <option value="United Kingdom">United Kingdom</option>
+     <option value="United States">United States</option>
+     <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+     <option value="Uruguay">Uruguay</option>
+     <option value="Uzbekistan">Uzbekistan</option>
+     <option value="Vanuatu">Vanuatu</option>
+     <option value="Venezuela">Venezuela</option>
+     <option value="Viet Nam">Viet Nam</option>
+     <option value="Virgin Islands, British">Virgin Islands, British</option>
+     <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+     <option value="Wallis and Futuna">Wallis and Futuna</option>
+     <option value="Western Sahara">Western Sahara</option>
+     <option value="Yemen">Yemen</option>
+     <option value="Zambia">Zambia</option>
+     <option value="Zimbabwe">Zimbabwe</option>
+   </select></td>
+   <td>&nbsp;</td>
+ </tr>
+ </table>
+ <table width="531" border="0">
+   <!--DWLayoutTable-->
+   <tr>
+        <td height="23" colspan="10" valign="top"><p align="center" style="font:11pt arial; color:#FF0000"><span class="style7">World Wide Advertising Price Calculator</span></td>
+        </tr>
+  <tr>
+    <td height="32" colspan="2" bordercolor="#000000" style="border:#000000 solid medium"><div align="center"><span class="style1">Section&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Price</span><span class="style17">&nbsp;</span></div></td>
+    <td width="1">&nbsp;</td>
+    <td width="65" style="border:#000000 solid medium"><div align="center"><span class="style17">&nbsp;<span class="style1">States</span>&nbsp;</span></div></td>
+    <td width="3">&nbsp;</td>
+    <td width="102" bgcolor="#FDFD01" style="border:#000000 solid medium"><div align="center"><span class="style1">Price/Month</span></div></td>
+    <td width="1">&nbsp;</td>
+    <td width="62" style="border:#000000 solid medium"><div align="center"><span class="style1">Months</span></div></td>
+    <td width="1">&nbsp;</td>
+    <td width="96" bgcolor="#FDFD01" style="border:#000000 solid medium"><div align="center"><span class="style1">Total Price</span></div></td>
+  </tr>
+  <tr>
+    <td width="102" class="style1">Select One</td>
+    <td width="56">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selectd" style="visibility:hidden"><a class="md-trigger" data-modal="modal-1" href="#"><span class="style1">Select</span></a></div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selectd2" style="visibility:hidden"><a class="md-trigger" data-modal="modal-2" href="#"><span class="style1">Select</span></a>&nbsp;</div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td bordercolor="#000000"><div align=""><span class="style1">
+      <input name="qtyA" type="checkbox" id="qtyA" onclick="MM_showHideLayers('selectd','','show');MM_showHideLayers('selectd2','','show')" value="Directory" />
+      Directory
+    </span><br />
+    </div></td>
+    <td bordercolor="#000000"><div align="right">
+      <input name="total_potential" type="text" border="0" id="total_potential" size = 6 value = "49.99" style="border:0" readonly="readonly" /> 
+    </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="Counter" type="text" id="Counter" size = 5 value = "" style="" onchange="calculate()" readonly="readonly"/>
+      <br />
+    </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="txtThirdNumber" type="text" id="txtThirdNumber" style="" tabindex="99" onchange="calculate()" size="7" maxlength="7"" readonly="readonly" border:0 />
+    </div></td>
+    <td>&nbsp;</td>
+    <td>
+      <label></label>
+      <div align="center">
+         <input name="Counterd" type="text" id="Counterd" size = 5 value = "" style="" onchange="calculate4()" readonly="readonly" >
+      </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="txtThirdNumber2" type="text" style="border:0" tabindex="99" onchange="calculate4()" size="7" maxlength="7" readonly="readonly" />
+    </div></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selectn" style="visibility:hidden"><span class="style20"><a class="md-trigger" data-modal="modal-6" href="#"><span class="style1">Select</span></a></span></div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selectn2" style="visibility:hidden"><a class="md-trigger" data-modal="modal-3" href="#"><span class="style1">Select</span></a>&nbsp;</div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="style19"><div align="left"><span class="style1">
+<input name="qtyN" type="checkbox" id="qtyN" onclick="MM_showHideLayers('selectn','','show');MM_showHideLayers('selectn2','','show')" value="My Network" />      
+My Network</span><br />
+    </div></td>
+    <td><div align="right"><span class="style20"><span class="style37">
+      <input name="total_potentialn" type="text" style="border:0" id="total_potentialn" size = 6 value = "99.99" />
+    </span></span></div></td>
+    <td>&nbsp;</td>
+    <td><div align="center"><span class="style20">
+      <input name="Countern" type="text" id="Countern" size = 5 value = "" onchange="calculate1()" style="" readonly="readonly"/><br />
+    </span></div></td>
+    <td>&nbsp;</td>
+    <td><div align="center"><span class="style20">
+      <input name="txtThirdNumbern" type="text" style="border:0" tabindex="99" onchange="calculate1();calculate8()" size="7" maxlength="7" readonly />
+    </span></div></td>
+    <td>&nbsp;</td>
+    <td>
+      <div align="center">
+        <input name="Countern2" type="text" id="Countern2" size = 5 value = "" style="" onchange="calculate5()" readonly="readonly" >
+      </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center"><span class="style20">
+      <input name="txtThirdNumbern2" type="text" id="txtThirdNumbern2" style="border:0" tabindex="99" onchange="calculate5()" size="7" maxlength="7" readonly="readonly" />
+    </span></div></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selectc" style="visibility:hidden"><a class="md-trigger" data-modal="modal-7" href="#"><span class="style1">Select</span></a></div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selectc2" style="visibility:hidden"><a class="md-trigger" data-modal="modal-4" href="#"><span class="style1">Select</span></a>&nbsp;</div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td bordercolor="#F0F0F0"><div align="left"><span class="style1">
+      <input name="qtyCl" type="checkbox" id="qtyCl" onclick="MM_showHideLayers('selectc','','show');MM_showHideLayers('selectc2','','show')" value="Cluster" />  
+      Cluster</span><span class="style19"><span class="style20"><br />
+        </span></span></div></td>
+    <td><div align="right"><span class="style37">
+      <input name="total_potentialc" type="text" style="border:0" id="total_potentialc" size = 6 value = "499.99" />
+    </span></div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="Counterc" type="text" id="Counterc" size = 5 value = "" onchange="calculate2()" style="" readonly="readonly" /><br />
+    </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="txtThirdNumberc" type="text" id="txtThirdNumberc" style="border:0" tabindex="99" onchange="calculate2()" value="" size="7" maxlength="7" readonly="readonly" />
+    </div></td>
+    <td>&nbsp;</td>
+    <td>
+      <div align="center">
+        <input name="Counterc2" type="text" id="Counterc2" size = "5" value = "" style="" onchange="calculate6()" readonly="readonly" />
+       </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="txtThirdNumberc2" type="text" id="txtThirdNumberc2" style="border:0" tabindex="99" onchange="calculate6()" size="7" maxlength="7" readonly="readonly" />
+    </div></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selects" style="visibility:hidden"><a class="md-trigger" data-modal="modal-8" href="#"><span class="style1">Select</span></a></div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><div id="selects2" style="visibility:hidden"><a class="md-trigger" data-modal="modal-5" href="#"><span class="style1">Select</span></a>&nbsp;</div></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td bordercolor="#000000"><div align="left"><span class="style1">
+      <input name="qtyS" type="checkbox" id="qtyS" onclick="MM_showHideLayers('selects','','show');MM_showHideLayers('selects2','','show')" value="Supply" />
+      Supply</span><span class="style19"><br />
+        </span></div></td>
+    <td><div align="right"><span class="style37">
+      <input name="total_potentials" type="text" style="border:0" id="total_potentials" size = "6" value = "4999.99" />
+    </span></div></td>
+    <td>&nbsp;</td>
+    <td style=""><div align="center">
+      <input name="Counters" type="text" id="Counters" size = "5" value = "" onchange="calculate2();calculate3()" style="" readonly="readonly" /><br />
+    </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="txtThirdNumbers" type="text" id="txtThirdNumbers" style="border:0" tabindex="99" onchange="calculate2();calculate8()" size="7" maxlength="7" readonly="readonly" />
+    </div></td>
+    <td>&nbsp;</td>
+    <td>
+      <div align="center">
+        <input name="Counters2" type="text" id="Counters2" size = "5" value = "" style="" onchange="calculate7()" readonly="readonly" />      
+      </div></td>
+    <td>&nbsp;</td>
+    <td><div align="center">
+      <input name="txtThirdNumbers2" type="text" id="txtThirdNumbers2" style="border:0" tabindex="99" onchange="calculate6()" size="7" maxlength="7" readonly="readonly" />
+    </div></td>
+  </tr>
+  <tr>
+    <td><div style="visibility:hidden"><select size="1" name="qtyC" onchange="calculate()" style="width:5px">
+        <option value="0">Select One</option>
+        <option value="1">Automobiles</option>
+        <option value="4.01337793">Computers</option>
+        <option value="0">Soft Drinks</option>
+      </select></div></td>
+    <td><div style="visibility:hidden"><input name="totalB" type="text" style="border:none; font-size:16px; font-weight:bold" tabindex="99" onchange="calculate()" size="5" readonly="readonly" /></div></td>
+    <td>&nbsp;</td>
+    <td><div style="visibility:hidden"><input type="text" name="totalC" size="5" tabindex="99" onchange="calculate()" style="visibility:hidden" /></div></td>
+    <td>&nbsp;</td>
+    <td><div style="visibility:hidden"><input type="text" name="totalA" size="5" tabindex="99" onchange="calculate()" style="visibility:hidden" /></div></td>
+    <td>&nbsp;</td>
+    <td><input type="hidden" name="adtext" id="adtext" /></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td height="25">&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><input type="reset" value="Reset!" /></td>
+    <td>&nbsp;</td>
+    <td><input name="txtThirdNumberspt" type="text" id="txtThirdNumberspt" style="border:0" tabindex="99" size="7" maxlength="7" readonly="readonly" /></td>
+    <td>&nbsp;</td>
+    <td><div align="right" class="style1 style30">TOTAL:</div></td>
+    <td>&nbsp;</td>
+    <td><input name="txtThirdNumber3" type="text" id="txtThirdNumber3" style="font-size:14px; font-weight:bold; border:0" tabindex="99" size="7" maxlength="7" readonly="readonly" /></td>
+  </tr>
+</table>
+ <table width="795" border="0">
+  <!--DWLayoutTable-->
+    </table><div class="md-modal md-effect-1" id="modal-1">
+			<div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input name="s1[]" type="checkbox" class="CheckBox" id="s1[]" value="Alabama" onchange="calculate()" />
+        Alabama</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" id="s1[]" value="Alaska" onchange="calculate()" />
+        Alaska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" id="s1[]" value="Arizona" onchange="calculate()" />
+        Arizona</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Arkansas" onchange="calculate()" />
+        Arkansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="California" onchange="calculate()" />
+        California</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Colorado" onchange="calculate()" />
+        Colorado</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Connecticut" onchange="calculate()" />
+        Connecticut</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Delaware" onchange="calculate()" />
+        Delaware</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="District" onchange="calculate()" />
+        District of Columbia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Florida" onchange="calculate()"/>
+        Florida</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Georgia" onchange="calculate()"/>
+        Georgia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Hawaii" onchange="calculate()" />
+        Hawaii</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Idaho" onchange="calculate()" />
+        Idaho</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Illinois" onchange="calculate()" />
+        Illinois</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Indiana" onchange="calculate()" />
+        Indiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Iowa" onchange="calculate()" />
+        Iowa</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Kansas" onchange="calculate()" />
+        Kansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Kentucky" onchange="calculate()" />
+        Kentucky</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Louisiana" onchange="calculate()" />
+        Louisiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Maine" onchange="calculate()" />
+        Maine</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Maryland" onchange="calculate()" />
+        Maryland</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Massachusetts" onchange="calculate()" />
+        Massachusetts</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Michigan" onchange="calculate()" />
+        Michigan</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Minnesota" onchange="calculate()" />
+        Minnesota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Mississippi" onchange="calculate()" />
+        Mississippi</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Missouri" onchange="calculate()" />
+        Missouri</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Montana" onchange="calculate()" />
+        Montana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Nebraska" onchange="calculate()" />
+        Nebraska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Nevada" onchange="calculate()" />
+        Nevada</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="New Hampshire" onchange="calculate()" />
+        New Hampshire</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="New Jersey" onchange="calculate()" />
+        New Jersey</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="New Mexico" onchange="calculate()" />
+        New Mexico</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="New York" onchange="calculate()" />
+        New York</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="North Carolina" onchange="calculate()" />
+        North Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="North Dakota" onchange="calculate()" />
+        North Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Ohio" onchange="calculate()" />
+        Ohio</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Oklahoma" onchange="calculate()" />
+        Oklahoma</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Oregon" onchange="calculate()" />
+        Oregon</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Pennsylvania" onchange="calculate()" />
+        Pennsylvania</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Rhode Island" onchange="calculate()" />
+        Rhode Island</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="South Carolina" onchange="calculate()" />
+        South Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="South Dakota" onchange="calculate()" />
+        South Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Tennessee" onchange="calculate()" />
+        Tennessee</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Texas" onchange="calculate()" />
+        Texas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Utah" onchange="calculate()" />
+        Utah</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Vermont" onchange="calculate()" />
+        Vermont</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Virginia" onchange="calculate()" />
+        Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Washington" onchange="calculate()" />
+        Washington</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="West Virginia" onchange="calculate()" />
+        West Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Wisconsin" onchange="calculate()" />
+        Wisconsin</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s1[]" type="checkbox" class="CheckBox" value="Wyoming" onchange="calculate()" />
+        Wyoming</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>		</div>
+			</div>
+<div class="md-modal md-effect-1" id="modal-2">
+			<div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="1" onchange="calculate4()">
+        1 Month</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="2" onchange="calculate4()">2 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="3" onchange="calculate4()">3 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="4" onchange="calculate4()">4 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="5" onchange="calculate4()">5 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="6" onchange="calculate4()">6 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="7" onchange="calculate4()">7 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="8" onchange="calculate4()">8 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="9" onchange="calculate4()">9 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="10" onchange="calculate4()">10 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="11" onchange="calculate4()">11 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="12" onchange="calculate4()">12 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="13" onchange="calculate4()">13 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="14" onchange="calculate4()">14 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="15" onchange="calculate4()">15 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="16" onchange="calculate4()">16 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="17" onchange="calculate4()">17 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="18" onchange="calculate4()">18 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="19" onchange="calculate4()">19 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="20" onchange="calculate4()">20 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="21" onchange="calculate4()">21 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="22" onchange="calculate4()">22 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="23" onchange="calculate4()">23 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult(this.value)" value="24" onchange="calculate4()">24 Months</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>		</div>
+		</div>
+<div class="md-modal md-effect-1" id="modal-3">
+			<div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="1" onchange="calculate5()">
+        1 Month</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="2" onchange="calculate5()">2 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="3" onchange="calculate5()">3 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="4" onchange="calculate5()">4 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="5" onchange="calculate5()">5 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="6" onchange="calculate5()">6 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="7" onchange="calculate5()">7 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="8" onchange="calculate5()">8 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="9" onchange="calculate5()">9 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="10" onchange="calculate5()">10 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="11" onchange="calculate5()">11 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="12" onchange="calculate5()">12 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="13" onchange="calculate5()">13 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="14" onchange="calculate5()">14 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="15" onchange="calculate5()">15 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="16" onchange="calculate5()">16 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="17" onchange="calculate5()">17 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="18" onchange="calculate5()">18 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="19" onchange="calculate5()">19 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="20" onchange="calculate5()">20 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="21" onchange="calculate5()">21 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="22" onchange="calculate5()">22 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="23" onchange="calculate5()">23 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s5" onClick="displayResult1(this.value)" value="24" onchange="calculate5()">24 Months</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>		</div>
+		</div>
+<div class="md-modal md-effect-1" id="modal-4">
+		  <div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="1" onchange="calculate6()">
+        1 Month</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="2" onchange="calculate6()">2 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="3" onchange="calculate6()">3 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="4" onchange="calculate6()">4 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="5" onchange="calculate6()">5 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="6" onchange="calculate6()">6 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="7" onchange="calculate6()">7 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="8" onchange="calculate6()">8 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="9" onchange="calculate6()">9 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="10" onchange="calculate6()">10 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="11" onchange="calculate6()">11 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="12" onchange="calculate6()">12 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="13" onchange="calculate6()">13 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="14" onchange="calculate6()">14 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="15" onchange="calculate6()">15 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="16" onchange="calculate6()">16 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="17" onchange="calculate6()">17 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="18" onchange="calculate6()">18 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="19" onchange="calculate6()">19 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="20" onchange="calculate6()">20 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="21" onchange="calculate6()">21 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="22" onchange="calculate6()">22 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="23" onchange="calculate6()">23 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s6" onClick="displayResult2(this.value)" value="24" onchange="calculate6()">24 Months</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>	</div>
+		</div>
+<div class="md-modal md-effect-1" id="modal-5">
+		  <div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="1" onchange="calculate7()">
+        1 Month</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="2" onchange="calculate7()">2 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="3" onchange="calculate7()">3 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="4" onchange="calculate7()">4 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="5" onchange="calculate7()">5 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="6" onchange="calculate7()">6 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="7" onchange="calculate7()">7 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="8" onchange="calculate7()">8 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="9" onchange="calculate7()">9 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="10" onchange="calculate7()">10 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="11" onchange="calculate7()">11 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="12" onchange="calculate7()">12 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="13" onchange="calculate7()">13 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="14" onchange="calculate7()">14 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="15" onchange="calculate7()">15 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="16" onchange="calculate7()">16 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="17" onchange="calculate7()">17 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="18" onchange="calculate7()">18 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="19" onchange="calculate7()">19 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="20" onchange="calculate7()">20 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="21" onchange="calculate7()">21 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="22" onchange="calculate7()">22 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="23" onchange="calculate7()">23 Months</td>
+    </tr>
+    <tr>
+      <td height="21"><input type="radio" name="s7" onClick="displayResult3(this.value)" value="24" onchange="calculate7()">24 Months</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>	</div>
+		</div>
+<div class="md-modal md-effect-1" id="modal-6" style="z-index:999">
+		  <div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input name="s2[]" type="checkbox" class="CheckBox1" id="s1" value="Alabama" onchange="calculate1()" />
+        Alabama</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" id="s1" value="Alaska" onchange="calculate1()" />
+        Alaska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" id="s1" value="Arizona" onchange="calculate1()" />
+        Arizona</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Arkansas" onchange="calculate1()" />
+        Arkansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="California" onchange="calculate1()" />
+        California</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Colorado" onchange="calculate1()" />
+        Colorado</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Connecticut" onchange="calculate1()" />
+        Connecticut</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Delaware" onchange="calculate1()" />
+        Delaware</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="District" onchange="calculate1()" />
+        District of Columbia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Florida" onchange="calculate1()"/>
+        Florida</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Georgia" onchange="calculate1()"/>
+        Georgia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Hawaii" onchange="calculate1()" />
+        Hawaii</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Idaho" onchange="calculate1()" />
+        Idaho</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Illinois" onchange="calculate1()" />
+        Illinois</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Indiana" onchange="calculate1()" />
+        Indiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Iowa" onchange="calculate1()" />
+        Iowa</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Kansas" onchange="calculate1()" />
+        Kansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Kentucky" onchange="calculate1()" />
+        Kentucky</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Louisiana" onchange="calculate1()" />
+        Louisiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Maine" onchange="calculate1()" />
+        Maine</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Maryland" onchange="calculate1()" />
+        Maryland</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Massachusetts" onchange="calculate1()" />
+        Massachusetts</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Michigan" onchange="calculate1()" />
+        Michigan</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Minnesota" onchange="calculate1()" />
+        Minnesota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Mississippi" onchange="calculate1()" />
+        Mississippi</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Missouri" onchange="calculate1()" />
+        Missouri</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Montana" onchange="calculate1()" />
+        Montana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Nebraska" onchange="calculate1()" />
+        Nebraska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Nevada" onchange="calculate1()" />
+        Nevada</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="New Hampshire" onchange="calculate1()" />
+        New Hampshire</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="New Jersey" onchange="calculate1()" />
+        New Jersey</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="New Mexico" onchange="calculate1()" />
+        New Mexico</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="New York" onchange="calculate1()" />
+        New York</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="North Carolina" onchange="calculate1()" />
+        North Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="North Dakota" onchange="calculate1()" />
+        North Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Ohio" onchange="calculate1()" />
+        Ohio</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Oklahoma" onchange="calculate1()" />
+        Oklahoma</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Oregon" onchange="calculate1()" />
+        Oregon</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Pennsylvania" onchange="calculate1()" />
+        Pennsylvania</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Rhode Island" onchange="calculate1()" />
+        Rhode Island</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="South Carolina" onchange="calculate1()" />
+        South Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="South Dakota" onchange="calculate1()" />
+        South Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Tennessee" onchange="calculate1()" />
+        Tennessee</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Texas" onchange="calculate1()" />
+        Texas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Utah" onchange="calculate1()" />
+        Utah</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Vermont" onchange="calculate1()" />
+        Vermont</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Virginia" onchange="calculate1()" />
+        Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Washington" onchange="calculate1()" />
+        Washington</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="West Virginia" onchange="calculate1()" />
+        West Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Wisconsin" onchange="calculate1()" />
+        Wisconsin</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s2[]" type="checkbox" class="CheckBox1" value="Wyoming" onchange="calculate1()" />
+        Wyoming</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>		</div>
+		</div>
+<div class="md-modal md-effect-1" id="modal-7" style="z-index:999">
+		  <div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input name="s3[]" type="checkbox" class="CheckBox2" id="s3[]" value="Alabama" onchange="calculate2()" />
+        Alabama</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" id="s3[]" value="Alaska" onchange="calculate2()" />
+        Alaska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" id="s3[]" value="Arizona" onchange="calculate2()" />
+        Arizona</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Arkansas" onchange="calculate2()" />
+        Arkansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="California" onchange="calculate2()" />
+        California</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Colorado" onchange="calculate2()" />
+        Colorado</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Connecticut" onchange="calculate2()" />
+        Connecticut</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Delaware" onchange="calculate2()" />
+        Delaware</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="District" onchange="calculate2()" />
+        District of Columbia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Florida" onchange="calculate2()"/>
+        Florida</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Georgia" onchange="calculate2()"/>
+        Georgia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Hawaii" onchange="calculate2()" />
+        Hawaii</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Idaho" onchange="calculate2()" />
+        Idaho</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Illinois" onchange="calculate2()" />
+        Illinois</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Indiana" onchange="calculate2()" />
+        Indiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Iowa" onchange="calculate2()" />
+        Iowa</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Kansas" onchange="calculate2()" />
+        Kansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Kentucky" onchange="calculate2()" />
+        Kentucky</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Louisiana" onchange="calculate2()" />
+        Louisiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Maine" onchange="calculate2()" />
+        Maine</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Maryland" onchange="calculate2()" />
+        Maryland</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Massachusetts" onchange="calculate2()" />
+        Massachusetts</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Michigan" onchange="calculate2()" />
+        Michigan</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Minnesota" onchange="calculate2()" />
+        Minnesota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Mississippi" onchange="calculate2()" />
+        Mississippi</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Missouri" onchange="calculate2()" />
+        Missouri</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Montana" onchange="calculate2()" />
+        Montana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Nebraska" onchange="calculate2()" />
+        Nebraska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Nevada" onchange="calculate2()" />
+        Nevada</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="New Hampshire" onchange="calculate2()" />
+        New Hampshire</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="New Jersey" onchange="calculate2()" />
+        New Jersey</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="New Mexico" onchange="calculate2()" />
+        New Mexico</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="New York" onchange="calculate2()" />
+        New York</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="North Carolina" onchange="calculate2()" />
+        North Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="North Dakota" onchange="calculate2()" />
+        North Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Ohio" onchange="calculate2()" />
+        Ohio</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Oklahoma" onchange="calculate2()" />
+        Oklahoma</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Oregon" onchange="calculate2()" />
+        Oregon</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Pennsylvania" onchange="calculate2()" />
+        Pennsylvania</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Rhode Island" onchange="calculate2()" />
+        Rhode Island</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="South Carolina" onchange="calculate2()" />
+        South Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="South Dakota" onchange="calculate2()" />
+        South Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Tennessee" onchange="calculate2()" />
+        Tennessee</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Texas" onchange="calculate2()" />
+        Texas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Utah" onchange="calculate2()" />
+        Utah</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Vermont" onchange="calculate2()" />
+        Vermont</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Virginia" onchange="calculate2()" />
+        Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Washington" onchange="calculate2()" />
+        Washington</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="West Virginia" onchange="calculate2()" />
+        West Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Wisconsin" onchange="calculate2()" />
+        Wisconsin</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s3[]" type="checkbox" class="CheckBox2" value="Wyoming" onchange="calculate2()" />
+        Wyoming</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>		</div>
+		</div>
+<div class="md-modal md-effect-1" id="modal-8" style="z-index:999">
+		  <div class="md-content">
+				<h3>Select State</h3>
+			  <div style="background:#fff; font-size:14px; overflow:scroll; height:100px; width:200px;">
+  <table width="150" border="0">
+    <!--DWLayoutTable-->
+    <tr>
+      <td width="497" height="21"><input name="s4[]" type="checkbox" class="CheckBox3" id="s4[]" value="Alabama" onchange="calculate3()" />
+        Alabama</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" id="s4[]" value="Alaska" onchange="calculate3()" />
+        Alaska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" id="s4[]" value="Arizona" onchange="calculate3()" />
+        Arizona</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Arkansas" onchange="calculate3()" />
+        Arkansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="California" onchange="calculate3()" />
+        California</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Colorado" onchange="calculate3()" />
+        Colorado</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Connecticut" onchange="calculate3()" />
+        Connecticut</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Delaware" onchange="calculate3()" />
+        Delaware</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="District" onchange="calculate3()" />
+        District of Columbia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Florida" onchange="calculate3()"/>
+        Florida</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Georgia" onchange="calculate3()"/>
+        Georgia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Hawaii" onchange="calculate3()" />
+        Hawaii</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Idaho" onchange="calculate3()" />
+        Idaho</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Illinois" onchange="calculate3()" />
+        Illinois</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Indiana" onchange="calculate3()" />
+        Indiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Iowa" onchange="calculate3()" />
+        Iowa</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Kansas" onchange="calculate3()" />
+        Kansas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Kentucky" onchange="calculate3()" />
+        Kentucky</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Louisiana" onchange="calculate3()" />
+        Louisiana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Maine" onchange="calculate3()" />
+        Maine</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Maryland" onchange="calculate3()" />
+        Maryland</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Massachusetts" onchange="calculate3()" />
+        Massachusetts</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Michigan" onchange="calculate3()" />
+        Michigan</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Minnesota" onchange="calculate3()" />
+        Minnesota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Mississippi" onchange="calculate3()" />
+        Mississippi</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Missouri" onchange="calculate3()" />
+        Missouri</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Montana" onchange="calculate3()" />
+        Montana</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Nebraska" onchange="calculate3()" />
+        Nebraska</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Nevada" onchange="calculate3()" />
+        Nevada</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="New Hampshire" onchange="calculate3()" />
+        New Hampshire</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="New Jersey" onchange="calculate3()" />
+        New Jersey</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="New Mexico" onchange="calculate3()" />
+        New Mexico</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="New York" onchange="calculate3()" />
+        New York</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="North Carolina" onchange="calculate3()" />
+        North Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="North Dakota" onchange="calculate3()" />
+        North Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Ohio" onchange="calculate3()" />
+        Ohio</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Oklahoma" onchange="calculate3()" />
+        Oklahoma</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Oregon" onchange="calculate3()" />
+        Oregon</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Pennsylvania" onchange="calculate3()" />
+        Pennsylvania</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Rhode Island" onchange="calculate3()" />
+        Rhode Island</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="South Carolina" onchange="calculate3()" />
+        South Carolina</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="South Dakota" onchange="calculate3()" />
+        South Dakota</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Tennessee" onchange="calculate3()" />
+        Tennessee</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Texas" onchange="calculate3()" />
+        Texas</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Utah" onchange="calculate3()" />
+        Utah</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Vermont" onchange="calculate3()" />
+        Vermont</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Virginia" onchange="calculate3()" />
+        Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Washington" onchange="calculate3()" />
+        Washington</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="West Virginia" onchange="calculate3()" />
+        West Virginia</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Wisconsin" onchange="calculate3()" />
+        Wisconsin</td>
+    </tr>
+    <tr>
+      <td height="21"><input name="s4[]" type="checkbox" class="CheckBox3" value="Wyoming" onchange="calculate3()" />
+        Wyoming</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="21">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+					<div style="position:absolute; top:-5px; left:220px"><a class="md-close" href="#"><img src="images/close.png" height="35px" width="35px" /></a></div>	</div>
+		</div>
+  <script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+var i = 0;
+$('.CheckBox').click(function() {
+    if ( $(this).attr('checked') ) {
+        i--;
+    } else {
+        i++;
+    }
+    
+   // $('#Counter').html(' ' + i + ' Selected ');
+	//$('#total_potential').html(sum);
+	 document.ofrm.Counter.value = i 
+});
+
+});//]]>  
+
+</script>
+ <script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+var i = 0;
+$('.CheckBox1').click(function() {
+    if ( $(this).attr('checked') ) {
+        i--;
+    } else {
+        i++;
+    }
+    
+   // $('#Counter').html(' ' + i + ' Selected ');
+	//$('#total_potential').html(sum);
+	 document.ofrm.Countern.value = i 
+});
+
+});//]]>  
+
+</script>
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+var i = 0;
+$('.CheckBox2').click(function() {
+    if ( $(this).attr('checked') ) {
+        i--;
+    } else {
+        i++;
+    }
+    
+   // $('#Counter').html(' ' + i + ' Selected ');
+	//$('#total_potential').html(sum);
+	 document.ofrm.Counterc.value = i 
+});
+
+});//]]>  
+
+</script>
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+var i = 0;
+$('.CheckBox3').click(function() {
+    if ( $(this).attr('checked') ) {
+        i--;
+    } else {
+        i++;
+    }
+    
+   // $('#Counter').html(' ' + i + ' Selected ');
+	//$('#total_potential').html(sum);
+	 document.ofrm.Counters.value = i 
+});
+
+});//]]>  
+
+</script>
+ <script type='text/javascript'>//<![CDATA[ 
+function CheckBox4() {
+$('.CheckBox4').click(function() {
+    if ( $(this).attr('checked') ) {
+        i;
+    } else {
+        i;
+    }
+    
+   // $('#Counter').html(' ' + i + ' Selected ');
+	//$('#total_potential').html(sum);
+	 document.ofrm.Counterd.value = i 
+});
+
+});//]]>  
+
+</script>
+    <fieldset class="sectionwrap">
+<legend></legend>
+    <br />
+<table width="39200%" border="0" cellpadding="0" cellspacing="0">
+      <!--DWLayoutTable-->
+      <tr>
+        <td width="114" height="35">&nbsp;</td>
+        <td width="416974" valign="top"><span class="style7"><span class="style36">Your Video or Ad</span></span></td>
+        </tr><tr>
+        <td height="86">&nbsp;</td>
+        <td valign="top"><input type="file" name="file" id="video" />
+          <br />
+          <span class="style1"> ( .mp4)
+        (max. 20MB, 30sec) </span><br />
+        <input type="file" name="file2" id="file2" />
+        <br />
+        <span class="style1"> ( .jpg, .gif, .png, .pdf)
+        (max. 5MB)</span></td>
+        </tr><tr>
+        <td height="35">&nbsp;</td>
+        <td valign="top"><span class="style7">Payment Options</span></td>
+        </tr>
+      <tr>
+        <td height="233" colspan="2" valign="top"><table width="606">
+                      <!--DWLayoutTable-->
+          <tr>
+                  <td height="110" colspan="7" valign="top"><table width="604">
+                          <tr>
+                            <td width="159"><label></label></td>
+                            <td width="433"><input type="radio" name="Pay Option" value="Check/Money Order" id="Pay Option_0" />
+Check/Money Order</td>
+                          </tr>
+                          <tr>
+                            <td><label></label></td>
+                            <td><input type="radio" name="Pay Option" value="Credit Card" id="Pay Option_1" />
+Credit Card</td>
+                          </tr>
+                          <tr>
+                            <td><label></label></td>
+                            <td><input type="radio" name="Pay Option" value="Bank Transfer" id="Pay Option_2" />
+Bank Transfer</td>
+                          </tr>
+                          <tr>
+                            <td><label></label></td>
+                            <td><input name="Pay Option" type="radio" id="Pay Option_3" value="Paypal" checked="checked" />
+Paypal</td>
+                          </tr>
+                              </table></td>
+                </tr>
+                      <tr>
+                        <td width="63" height="35">                        </td>
+                        <td width="78"></td>
+                        <td width="161"></td>
+                        <td width="63"><!--DWLayoutEmptyCell-->&nbsp;</td>
+                        <td width="27"></td>
+                        <td width="58"></td>
+                        <td width="117"></td>
+                </tr>
+                      <tr>
+                        <td height="41">&nbsp;</td>
+                        <td colspan="5" valign="top"><span class="style4">By Sign Up Network In and Out, you agree to Neway Outsourcing Inc.</span><span class="style4"> <a href="http://networkinandout.com/terms.php" onclick="javascript:void window.open('http://networkinandout.com/terms.php','1370366354559','width=580,height=600,toolbar=0,menubar=0,location=0,status=0,scrollbars=1,resizable=1,left=0,top=0');return false;">User Agreement</a>, </span><span class="style4">Privacy Policy and Cookie Policy.</span></td>
+                <td>&nbsp;</td>
+                </tr>
+                      <tr>
+                        <td height="35"></td>
+                        <td>&nbsp;</td>
+                        <td colspan="3" valign="top"><div align="center">
+                          <input type="submit" id="btnBlink" name="Submit" value="Pay Now" onclick="comprueba_extension(this.form, this.form.file.value)" style="width:150px; height:30px" />
+                        </div></td>
+                        <td valign="top"><div align="center"><div id="69" class="announce" style="display:none"><script src="js/paypal-button-minicart.min.js?merchant=paypal@networkinandout.com" 
+    data-button="cart" 
+    data-name="Directory" 
+    data-amount="69.99" 
+    data-currency="USD" 
+    data-recurrence="3"
+    data-period="M"
+    data-callback="http://networkinandout.com/main.php"
+></script></div>
+    <div id="99" class="announce" style="display:none"><script src="js/paypal-button-minicart.min.js?merchant=paypal@networkinandout.com" 
+    data-button="cart" 
+    data-name="My Network"
+    data-amount="99.99" 
+    data-currency="USD" 
+    data-recurrence="3"
+    data-period="M"
+    data-callback="http://networkinandout.com/main.php"
+></script>
+      </div>
+                        </div></td>
+                        <td></td>
+                      </tr>
+            </table></td>
+        </tr>
+    </table>
+    </fieldset>
+</form>
+</div>
+<!-- classie.js by @desandro: https://github.com/desandro/classie -->
+		<script src="js/classie.js"></script>
+		<script src="js/modalEffects.js"></script>
+
+		<!-- for the blur effect -->
+		<!-- by @derSchepp https://github.com/Schepp/CSS-Filters-Polyfill -->
+		<script>
+			// this is important for IEs
+			var polyfilter_scriptpath = '/js/';
+		</script>
+		<script src="js/cssParser.js"></script>
+		<script src="js/css-filters-polyfill.js"></script>
+</body>
+</html>
